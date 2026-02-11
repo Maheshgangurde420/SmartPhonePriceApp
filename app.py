@@ -27,10 +27,18 @@ if st.button("Predict Price"):
     processor = le_processor.transform([processor])[0]
     is_5g = 1 if is_5g == "Yes" else 0
 
-    features = np.array([[brand, series, ram, storage,
-                          camera, battery, display,
-                          processor, is_5g]])
+    import pandas as pd
 
-    prediction = model.predict(features)
+input_data = pd.DataFrame({
+    'Brand': [brand],
+    'Series': [series],
+    'RAM_GB': [ram],
+    'Storage_GB': [storage],
+    'Camera_MP': [camera],
+    'Battery_mAh': [battery],
+    'Screen_Size': [display],
+    'Processor': [processor],
+    '5G': [is_5g]
+})
 
-    st.success(f"Estimated Price: ₹ {int(prediction[0])}")
+prediction = model.predict(input_data)
