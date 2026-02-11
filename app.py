@@ -22,23 +22,31 @@ is_5g = st.selectbox("5G Support", ["Yes", "No"])
 
 if st.button("Predict Price"):
 
-    brand = le_brand.transform([brand])[0]
-    series = le_series.transform([series])[0]
-    processor = le_processor.transform([processor])[0]
-    is_5g = 1 if is_5g == "Yes" else 0
+    brand_encoded = le_brand.transform([brand])[0]
+    series_encoded = le_series.transform([series])[0]
+    processor_encoded = le_processor.transform([processor])[0]
+    is_5g_encoded = 1 if is_5g.lower() == "yes" else 0
+
 
     import pandas as pd
 
-input_data = pd.DataFrame({
-    'Brand': [brand],
-    'Series': [series],
-    'RAM_GB': [ram],
-    'Storage_GB': [storage],
-    'Camera_MP': [camera],
-    'Battery_mAh': [battery],
-    'Screen_Size': [display],
-    'Processor': [processor],
-    '5G': [is_5g]
-})
+    input_data = pd.DataFrame([[ 
+        brand_encoded,
+        series_encoded,
+        ram,
+        storage,
+        camera,
+        battery,
+        display,
+        processor_encoded,
+        is_5g_encoded
+    ]], columns=[
+        'Brand','Series','RAM_GB','Storage_GB',
+        'Camera_MP','Battery_mAh',
+        'Screen_Size','Processor','5G'
+    ])
 
-prediction = model.predict(input_data)
+    prediction = model.predict(input_data)
+
+    st.success(f"Estimated Price: ₹ {int(prediction[0])}")
+
